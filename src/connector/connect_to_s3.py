@@ -9,11 +9,7 @@ class S3Client:
 
     def create_client(self):
         try:
-            s3 = boto3.client('s3',
-                              endpoint_url='http://localhost:4566',
-                              aws_access_key_id='test',
-                              aws_secret_access_key='test',
-                              region_name='us-east-1')
+            s3 = boto3.client('s3', region_name='us-east-1')
             print("Connection to S3 successful")
             return s3
         except NoCredentialsError:
@@ -22,6 +18,7 @@ class S3Client:
         except ClientError as e:
             print(f"Client error: {e}")
             return None
+
 
     def list_objects_in_bucket(self):
         try:

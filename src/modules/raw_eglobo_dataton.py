@@ -1,11 +1,15 @@
-from botocore.exceptions import NoCredentialsError
-from connector.connect_to_s3 import S3Client 
+import sys
 import os
+from botocore.exceptions import NoCredentialsError
 
+# Adiciona o diretório src ao sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from connector.connect_to_s3 import S3Client
 
 class RawEgloboDataton:
     def __init__(self):
-        self.__s3_client = S3Client('eglobo-dataton')
+        self.__s3_client = S3Client('dataton-eglobo')
 
     def upload_csv_to_s3(self, file_path):
         """
@@ -28,11 +32,14 @@ class RawEgloboDataton:
         """
         Método principal para processar e enviar os arquivos CSV para o S3.
         """
-        path_file = '../io_files/input_data/treino_parte'
+        # Obtém o caminho absoluto do diretório atual do script
+        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../io_files/input_data"))
+        
         csv_files = []
 
         for i in range(1, 7):
-            name_file = f"{path_file}{i}.csv"
+            name_file = os.path.join(base_path, f"treino_parte{i}.csv")
+            
             if os.path.exists(name_file):
                 csv_files.append(name_file)
                 print(f"Arquivo {name_file} encontrado e adicionado à lista")
@@ -42,9 +49,7 @@ class RawEgloboDataton:
         for file_path in csv_files:
             self.upload_csv_to_s3(file_path)
 
-
 if __name__ == '__main__':
-
     try:
         rawEgloboDataton = RawEgloboDataton()
         rawEgloboDataton.main()
